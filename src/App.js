@@ -1,5 +1,5 @@
 import './App.css';
-import {useState} from 'react'
+import {useEffect, useState} from 'react'
 import Header from './components/Header'
 import Tasks from './components/Tasks'
 import AddTask from './components/AddTask'
@@ -10,17 +10,48 @@ function App() {
   const [showAddTask, setShowAddTask] = useState(false)
   const [tasks, setTasks] = useState([])
   
+  useEffect (() => {
+    const getTasks = async () => {
+      const tasksFromServer = await fetchTasks()
+      setTasks(tasksFromServer)
+    }
+    
+    getTasks();
+    
+  }, []);
+  
+  
+  //Fetch Tasks
+  const fetchTasks = async () => {
+    const res = await fetch('http://localhost:8000/tasks')
+    const data = await res.json()
+    
+    return data;
+  }
+  
   //Delete Task
-  const deleteTask = (id) => {
+  const deleteTask = async (id) => {
+    await fetch(`http://localhost:8000/tasks/${id}`, {
+      method: 'DELETE',
+    })
+  
     setTasks(tasks.filter((task) => task.id !== id))
   }
   
   //Add Task
-  const addTask = (task) => {
-    const id = Math.floor(Math.random() * 10000) + 1
-    const newTask = { id, ...task}
-    setTasks({ ...tasks, newTask });
-    console.log(newTask , task)
+  const addTask = async (task) => {
+    const res = await fetch('http://localhost:8000/tasks', {
+      method: 'POST',
+      header: {
+       'Content-type': 'application/json'
+     },
+     body: JSON.stringify(task)
+    })
+    
+    const data = await res.json()
+    
+    setTasks([...tasks, data])
+    console.log(data)
   }
 
   //Toggle Reminder
