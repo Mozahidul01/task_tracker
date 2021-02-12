@@ -1,6 +1,6 @@
 import Button from './Button'
 
-const Header = ({ title, onAdd, showAdd }) => {
+const Header = ({ onAdd, showAdd }) => {
 
   return (
     <header className='header'>
@@ -13,4 +13,4 @@ const Header = ({ title, onAdd, showAdd }) => {
     </header>
   )
 }
-export default Header
+export default Header;
